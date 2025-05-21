@@ -57,11 +57,25 @@ services:
       - traefik_network
     mem_limit: 64M
 
+  changedetection:
+    image: ghcr.io/dgtlmoon/changedetection.io
+    container_name: changedetection-dynamic
+    hostname: changedetection
+    restart: unless-stopped
+    volumes:
+      - changedetection-data:/datastore
+    env_file:
+      - .env
+    networks:
+      - traefik_network
+    mem_limit: 256M
+
 volumes:
   traefik_letsencrypt:
     driver: local
   traefik_dynamic:
     driver: local
+  changedetection-data: {}
 
 networks:
   traefik_network:

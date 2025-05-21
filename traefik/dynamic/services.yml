@@ -7,12 +7,12 @@ http:
         servers:
           - url: "http://traefik-dynamic:8080"
 
-    supabase-studio-service:
-      loadBalancer:
-        servers:
-          - url: "http://192.168.86.39:8000"
-
     noop-service:
       loadBalancer:
         servers:
           - url: "http://noop-dynamic:80"
+
+    changedetection-service:
+      loadBalancer:
+        servers:
+          - url: "http://changedetection-dynamic:5000"

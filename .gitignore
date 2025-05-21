@@ -1,19 +1,23 @@
 # Environment files (sensitive data)
 *.env*
 *.env
+changedetection/config/*
 
 # Certificates (Traefik and SSL)
 **/acme.json
 **/acme*.json
 **/certs/
 traefik/letsencrypt/
+traefik/dynamic/ # Ignore Traefik's dynamically generated configuration files
 
 # Docker state & volumes
 volumes/
 docker-compose.override.yml
+**/docker-compose.dev.yml # Ignore development-specific docker-compose files
 
 # Database data
 **/pg_data/
+# supabase-project/dev/data.sql # Uncomment if this SQL file is for local dev setup/large dump and not meant to be tracked
 # **/data/ # This is too general, covered by specific project data ignores or volumes/
 # volumes/db/ # covered by volumes/
 # volumes/db/var/lib/postgresql/ # covered by volumes/

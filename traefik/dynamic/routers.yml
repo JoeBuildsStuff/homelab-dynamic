@@ -30,12 +30,22 @@ http:
       # middlewares:
       #   - ruture auth solution
 
-    supabase-studio:
-      rule: "Host(`supabase.joe-taylor.me`)"
-      service: supabase-studio-service
+    noop-router:
+      rule: "Host(`noop.joe-taylor.me`)"
+      service: noop-service
       entryPoints:
         - websecure
       tls:
         certResolver: cloudflare
       # middlewares:
-      #   - ruture auth solution
+      #   - future auth solution
+
+    changedetection-router:
+      rule: "Host(`changedetection.joe-taylor.me`)"
+      service: changedetection-dynamic
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      # middlewares:
+      #   - future auth solution
