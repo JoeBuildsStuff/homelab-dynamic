@@ -16,3 +16,18 @@ http:
       loadBalancer:
         servers:
           - url: "http://changedetection-dynamic:5000"
+
+    supabase-studio-service:
+      loadBalancer:
+        servers:
+          - url: "http://supabase-studio:3000"
+
+    supabase-kong-service:
+      loadBalancer:
+        servers:
+          - url: "http://supabase-kong:8000"
+
+    supagate-service:
+      loadBalancer:
+        servers:
+          - url: "http://supagate_app:3000"

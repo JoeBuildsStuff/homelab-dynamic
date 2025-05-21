@@ -42,10 +42,34 @@ http:
 
     changedetection-router:
       rule: "Host(`changedetection.joe-taylor.me`)"
-      service: changedetection-dynamic
+      service: changedetection-service
       entryPoints:
         - websecure
       tls:
         certResolver: cloudflare
       # middlewares:
       #   - future auth solution
+
+    supabase-studio-router:
+      rule: "Host(`studio.supabase.joe-taylor.me`)"
+      service: supabase-studio-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+
+    supabase-kong-router:
+      rule: "Host(`supabase.joe-taylor.me`)"
+      service: supabase-kong-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+
+    supagate-router:
+      rule: "Host(`supagate.joe-taylor.me`)"
+      service: supagate-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare

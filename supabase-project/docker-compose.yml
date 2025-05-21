@@ -13,6 +13,17 @@ services:
     container_name: supabase-studio
     image: supabase/studio:2025.05.19-sha-3487831
     restart: unless-stopped
+    networks:
+      - default
+      - traefik_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.supabase-studio.rule=Host(`studio.supabase.joe-taylor.me`)"
+      - "traefik.http.routers.supabase-studio.entrypoints=websecure"
+      - "traefik.http.routers.supabase-studio.tls.certresolver=cloudflare"
+      - "traefik.http.routers.supabase-studio.service=supabase-studio-service"
+      - "traefik.http.services.supabase-studio-service.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik_network"
     healthcheck:
       test:
         [
@@ -53,9 +64,20 @@ services:
     container_name: supabase-kong
     image: kong:2.8.1
     restart: unless-stopped
-    ports:
-      - ${KONG_HTTP_PORT}:8000/tcp
-      - ${KONG_HTTPS_PORT}:8443/tcp
+    networks:
+      - default
+      - traefik_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.supabase-kong.rule=Host(`supabase.joe-taylor.me`)"
+      - "traefik.http.routers.supabase-kong.entrypoints=websecure"
+      - "traefik.http.routers.supabase-kong.tls.certresolver=cloudflare"
+      - "traefik.http.routers.supabase-kong.service=supabase-kong-service"
+      - "traefik.http.services.supabase-kong-service.loadbalancer.server.port=8000"
+      - "traefik.docker.network=traefik_network"
+    # ports:
+    #   - ${KONG_HTTP_PORT}:8000/tcp
+    #   - ${KONG_HTTPS_PORT}:8443/tcp
     volumes:
       # https://github.com/supabase/supabase/issues/12661
       - ./volumes/api/kong.yml:/home/kong/temp.yml:ro,z
@@ -526,3 +548,9 @@ services:
 
 volumes:
   db-config:
+
+networks:
+  traefik_network:
+    external: true
+  default:
+    driver: bridge
