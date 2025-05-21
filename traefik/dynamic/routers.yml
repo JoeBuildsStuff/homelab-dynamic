@@ -1,0 +1,41 @@
+# traefik/dynamic/routers.yml
+
+http:
+  routers:
+    http-catchall:
+      rule: "HostRegexp(`{host:.+}`)"
+      service: noop-service
+      entryPoints:
+        - web
+      middlewares:
+        - redirect-to-https
+
+    https-catchall:
+      rule: "HostRegexp(`{host:.+}`)"
+      service: noop-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      # middlewares:
+      #   - ruture auth solution
+
+    traefik-dashboard:
+      rule: "Host(`traefik.joe-taylor.me`)"
+      service: api@internal
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      # middlewares:
+      #   - ruture auth solution
+
+    supabase-studio:
+      rule: "Host(`supabase.joe-taylor.me`)"
+      service: supabase-studio-service
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: cloudflare
+      # middlewares:
+      #   - ruture auth solution

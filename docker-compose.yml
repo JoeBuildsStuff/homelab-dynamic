@@ -1,0 +1,68 @@
+services:
+  traefik:
+    image: traefik:v3.1.4
+    container_name: traefik-dynamic
+    restart: unless-stopped
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.file.directory=/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.traefik.address=:8080"
+      - "--ping=true"
+      - "--ping.entrypoint=traefik"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge=true"
+      - "--certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.cloudflare.acme.email=${CLOUDFLARE_API_EMAIL}"
+      - "--certificatesresolvers.cloudflare.acme.storage=/traefik/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - ./traefik/letsencrypt:/traefik/letsencrypt
+      - ./traefik/dynamic:/traefik/dynamic:ro
+    environment:
+      - CLOUDFLARE_API_EMAIL=${CLOUDFLARE_API_EMAIL}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Maps host.docker.internal to the host's gateway
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    env_file:
+      - .env
+    networks:
+      - traefik_network
+    mem_limit: 256M
+    
+  noop:
+    image: nginx:alpine
+    container_name: noop-dynamic
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=false"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    env_file:
+      - .env
+    networks:
+      - traefik_network
+    mem_limit: 64M
+
+volumes:
+  traefik_letsencrypt:
+    driver: local
+  traefik_dynamic:
+    driver: local
+
+networks:
+  traefik_network:
+    external: true

@@ -1,0 +1,17 @@
+# traefik/dynamic/middlewares.yml
+http:
+  middlewares:
+    # TODO: add future auth solution
+    # future-forward-auth:
+    #   forwardAuth:
+    #     address: "http://future-auth-server:9000/outpost.future-auth.io/auth/traefik"
+    #     trustForwardHeader: true
+    #     authResponseHeaders:
+    #       - X-future-auth-username
+    #       - X-future-auth-email
+    #       - X-future-auth-name
+    #       - X-future-auth-groups
+
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
